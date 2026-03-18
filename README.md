@@ -43,16 +43,6 @@ npm run build
 2. 连接 GitHub 仓库
 3. 自动部署
 
-### 其他平台
-
-```bash
-# 构建
-npm run build
-
-# 预览构建结果
-npm run preview
-```
-
 ## 项目结构
 
 ```
@@ -62,9 +52,8 @@ artifish/
 │   ├── pages/        # 页面
 │   ├── App.jsx      # 主应用
 │   └── main.jsx     # 入口
-├── public/           # 静态资源
-├── index.html       # HTML模板
-└── package.json    # 依赖
+├── index.html        # HTML模板
+└── package.json     # 依赖
 ```
 
 ## License
