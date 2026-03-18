@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新建客户 - CRM 系统</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif; background: #f0f2f5; }
+    
+    /* 头部 */
+    .header { background: linear-gradient(107deg, #FF7C3C 0%, #FF5E1A 100%); padding: 20px 24px; color: white; display: flex; align-items: center; justify-content: space-between; }
+    .header h1 { font-size: 20px; font-weight: 600; }
+    .back { color: white; text-decoration: none; font-size: 14px; opacity: 0.9; }
+    
+    /* 导航 */
+    .nav { background: white; padding: 0 24px; border-bottom: 1px solid #f0f0f0; display: flex; gap: 24px; }
+    .nav-item { padding: 16px 0; color: #FF7C3C; font-size: 14px; cursor: pointer; border-bottom: 2px solid #FF7C3C; }
+    .nav-item.inactive { color: #666; border-bottom-color: transparent; }
+    
+    /* 表单 */
+    .form { background: white; margin: 24px; padding: 32px; border-radius: 12px; max-width: 800px; }
+    .form-title { font-size: 18px; font-weight: 600; margin-bottom: 24px; color: #333; }
+    .form-section { margin-bottom: 32px; }
+    .form-section-title { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 16px; padding-left: 12px; border-left: 3px solid #FF7C3C; }
+    .form-row { display: flex; gap: 24px; margin-bottom: 20px; }
+    .form-group { flex: 1; }
+    .form-label { display: block; font-size: 14px; color: #666; margin-bottom: 8px; }
+    .form-label .required { color: #ff4d4f; }
+    .form-input { width: 100%; padding: 10px 12px; border: 1px solid #d9d9d9; border-radius: 8px; font-size: 14px; transition: all 0.2s; }
+    .form-input:focus { outline: none; border-color: #FF7C3C; box-shadow: 0 0 0 2px rgba(255, 124, 60, 0.1); }
+    .form-select { width: 100%; padding: 10px 12px; border: 1px solid #d9d9d9; border-radius: 8px; font-size: 14px; background: white; }
+    .form-textarea { width: 100%; padding: 10px 12px; border: 1px solid #d9d9d9; border-radius: 8px; font-size: 14px; min-height: 100px; resize: vertical; }
+    
+    .form-actions { display: flex; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 1px solid #f0f0f0; }
+    .btn { padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-primary { background: linear-gradient(107deg, #FF7C3C, #FF5E1A); color: white; }
+    .btn-primary:hover { box-shadow: 0 4px 12px rgba(255, 124, 60, 0.4); }
+    .btn-default { background: white; border: 1px solid #d9d9d9; color: #333; }
+    .btn-default:hover { border-color: #FF7C3C; color: #FF7C3C; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>CRM 客户管理系统</h1>
+    <a href="#" class="back">← 返回列表</a>
+  </div>
+  
+  <div class="nav">
+    <div class="nav-item inactive">客户列表</div>
+    <div class="nav-item">新建客户</div>
+  </div>
+  
+  <div class="form">
+    <div class="form-title">新建客户</div>
+    
+    <div class="form-section">
+      <div class="form-section-title">基本信息</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">客户名称 <span class="required">*</span></label>
+          <input type="text" class="form-input" placeholder="请输入客户名称">
+        </div>
+        <div class="form-group">
+          <label class="form-label">所属行业 <span class="required">*</span></label>
+          <select class="form-select">
+            <option>请选择行业</option>
+            <option>电商</option>
+            <option>互联网</option>
+            <option>金融</option>
+            <option>教育</option>
+            <option>医疗</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <div class="form-section-title">联系人信息</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">联系人姓名 <span class="required">*</span></label>
+          <input type="text" class="form-input" placeholder="请输入联系人姓名">
+        </div>
+        <div class="form-group">
+          <label class="form-label">联系电话 <span class="required">*</span></label>
+          <input type="text" class="form-input" placeholder="请输入联系电话">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">电子邮箱</label>
+          <input type="email" class="form-input" placeholder="请输入电子邮箱">
+        </div>
+        <div class="form-group">
+          <label class="form-label">职位</label>
+          <input type="text" class="form-input" placeholder="请输入职位">
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <div class="form-section-title">其他信息</div>
+      <div class="form-group">
+        <label class="form-label">备注</label>
+        <textarea class="form-textarea" placeholder="请输入备注信息..."></textarea>
+      </div>
+    </div>
+    
+    <div class="form-actions">
+      <button class="btn btn-primary">保存</button>
+      <button class="btn btn-default">取消</button>
+    </div>
+  </div>
+</body>
+</html>
