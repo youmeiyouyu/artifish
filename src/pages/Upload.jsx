@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
+import { supabase, securityConfig, sanitizeInput, validateImage } from '../lib/supabase'
 
 export default function Upload() {
   const navigate = useNavigate()
+  const fileInputRef = useRef(null)
   const [uploading, setUploading] = useState(false)
+  const [preview, setPreview] = useState(null)
+  const [error, setError] = useState(null)
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -14,29 +17,93 @@ export default function Upload() {
     authorName: '',
   })
 
+  // 选择图片
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]
+    setError(null)
+    
+    if (!file) return
+    
+    // 验证图片
+    const validation = validateImage(file)
+    if (!validation.valid) {
+      setError(validation.error)
+      return
+    }
+    
+    // 预览
+    const reader = new FileReader()
+    reader.onload = (e) => setPreview(e.target.result)
+    reader.readAsDataURL(file)
+    
+    // 存储文件引用
+    setForm({ ...form, imageFile: file })
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setUploading(true)
+    setError(null)
 
-    // 模拟图片上传（实际需要 Storage）
-    const imageUrl = `https://picsum.photos/seed/${Date.now()}/400/300`
+    try {
+      // 验证必填字段
+      if (!form.title || !form.techStack || !form.authorName) {
+        throw new Error('请填写必填字段')
+      }
 
-    const { error } = await supabase.from('works').insert({
-      title: form.title,
-      description: form.description,
-      tech_stack: form.techStack,
-      demo_url: form.demoUrl,
-      code_url: form.codeUrl,
-      author_name: form.authorName,
-      image_url: imageUrl,
-    })
+      // 标题安全过滤
+      const title = sanitizeInput(form.title)
+      if (title.length > securityConfig.maxTitleLength) {
+        throw new Error(`标题不能超过${securityConfig.maxTitleLength}个字符`)
+      }
 
-    if (error) {
-      alert('上传失败: ' + error.message)
-    } else {
+      // 昵称安全过滤
+      const authorName = sanitizeInput(form.authorName)
+      if (authorName.length > securityConfig.maxNicknameLength) {
+        throw new Error(`昵称不能超过${securityConfig.maxNicknameLength}个字符`)
+      }
+
+      let imageUrl = ''
+
+      // 上传图片到 Storage
+      if (form.imageFile) {
+        const file = form.imageFile
+        const fileExt = file.name.split('.').pop()
+        const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`
+        
+        const { data, error: uploadError } = await supabase.storage
+          .from('works')
+          .upload(fileName, file)
+
+        if (uploadError) throw new Error('图片上传失败')
+
+        // 获取公开 URL
+        const { data: urlData } = supabase.storage
+          .from('works')
+          .getPublicUrl(fileName)
+        
+        imageUrl = urlData.publicUrl
+      }
+
+      // 保存到数据库
+      const { error: dbError } = await supabase.from('works').insert({
+        title,
+        description: sanitizeInput(form.description).slice(0, securityConfig.maxDescLength),
+        tech_stack: sanitizeInput(form.techStack),
+        demo_url: sanitizeInput(form.demoUrl),
+        code_url: sanitizeInput(form.codeUrl),
+        author_name: authorName,
+        image_url: imageUrl || `https://picsum.photos/seed/${Date.now()}/800/600`,
+      })
+
+      if (dbError) throw new Error('保存失败')
+
       alert('作品上传成功！')
       navigate('/')
+    } catch (err) {
+      setError(err.message)
     }
+    
     setUploading(false)
   }
 
@@ -44,18 +111,40 @@ export default function Upload() {
     <div className="max-w-2xl mx-auto animate-fadeIn">
       <h1 className="text-2xl font-bold text-gray-800 mb-8">上传作品</h1>
       
+      {error && (
+        <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-lg">
+          {error}
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* 作品截图 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             作品截图 *
           </label>
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary transition-colors cursor-pointer">
-            <svg className="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828l0 0 8 8a2 2 0 001.414.586l4 4m0 0l8-8m-8 8l8-8" />
-            </svg>
-            <p className="text-gray-500 mb-1">点击或拖拽上传图片</p>
-            <p className="text-xs text-gray-400">（演示模式：自动生成随机图片）</p>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            className="hidden"
+          />
+          <div 
+            onClick={() => fileInputRef.current?.click()}
+            className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary transition-colors cursor-pointer"
+          >
+            {preview ? (
+              <img src={preview} alt="预览" className="max-h-48 mx-auto rounded-lg" />
+            ) : (
+              <>
+                <svg className="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828l0 0 8 8a2 2 0 001.414.586l4 4m0 0l8-8m-8 8l8-8" />
+                </svg>
+                <p className="text-gray-500 mb-1">点击上传图片</p>
+                <p className="text-xs text-gray-400">支持 JPG、PNG、GIF、WebP，最大 5MB</p>
+              </>
+            )}
           </div>
         </div>
 
@@ -69,6 +158,7 @@ export default function Upload() {
             value={form.title}
             onChange={(e) => setForm({...form, title: e.target.value})}
             placeholder="例如：CRM 客户管理系统"
+            maxLength={securityConfig.maxTitleLength}
             className="w-full px-4 py-3 rounded-lg border border-gray-200 input-focus"
             required
           />
@@ -83,6 +173,7 @@ export default function Upload() {
             value={form.description}
             onChange={(e) => setForm({...form, description: e.target.value})}
             placeholder="介绍一下你的作品..."
+            maxLength={securityConfig.maxDescLength}
             rows={3}
             className="w-full px-4 py-3 rounded-lg border border-gray-200 input-focus resize-none"
           />
@@ -141,6 +232,7 @@ export default function Upload() {
             value={form.authorName}
             onChange={(e) => setForm({...form, authorName: e.target.value})}
             placeholder="给自己起个名字"
+            maxLength={securityConfig.maxNicknameLength}
             className="w-full px-4 py-3 rounded-lg border border-gray-200 input-focus"
             required
           />
