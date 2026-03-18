@@ -94,7 +94,7 @@ export default function WorkDetail() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto animate-fadeIn">
+    <div className="max-w-7xl mx-auto animate-fadeIn px-4">
       {/* 返回按钮 */}
       <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary mb-6 transition-colors">
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,40 +103,97 @@ export default function WorkDetail() {
         返回
       </Link>
 
-      {/* 作品演示 */}
-      {work.demo_url && (
-        <div className="bg-gray-100 rounded-2xl overflow-hidden mb-6 border border-gray-200">
-          <iframe 
-            src={work.demo_url}
-            title={work.title}
-            className="w-full"
-            style={{ height: '500px' }}
-          />
-        </div>
-      )}
-
-      {/* 作品信息 */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-3">
-          {work.title}
-        </h1>
-        
-        <div className="flex items-center gap-4 mb-4">
-          <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
-            {work.tech_stack || '未分类'}
-          </span>
-          <span className="text-gray-400 text-sm">
-            by {work.author_name}
-          </span>
-        </div>
-
-        <p className="text-gray-600 leading-relaxed mb-6">
-          {work.description || '暂无描述'}
-        </p>
-
-        {/* 链接 */}
-        <div className="flex flex-wrap gap-3 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* 左侧：演示 */}
+        <div className="lg:col-span-2">
+          {/* 作品信息 */}
+          <div className="mb-4">
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">
+              {work.title}
+            </h1>
+            <div className="flex items-center gap-3">
+              <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                {work.tech_stack || '未分类'}
+              </span>
+              <span className="text-gray-400 text-sm">
+                by {work.author_name}
+              </span>
+            </div>
+          </div>
+          
+          {/* 演示 */}
           {work.demo_url && (
+            <div className="bg-gray-100 rounded-2xl overflow-hidden border border-gray-200">
+              <iframe 
+                src={work.demo_url}
+                title={work.title}
+                className="w-full"
+                style={{ height: '600px' }}
+              />
+            </div>
+          )}
+
+          {/* 描述 */}
+          <p className="text-gray-600 mt-4">
+            {work.description || '暂无描述'}
+          </p>
+        </div>
+
+        {/* 右侧：评论 */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-20">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              评论 ({comments.length})
+            </h3>
+
+            {/* 评论列表 */}
+            <div className="space-y-3 mb-4 max-h-96 overflow-y-auto">
+              {comments.length === 0 && (
+                <p className="text-gray-400 text-sm text-center py-4">暂无评论</p>
+              )}
+              {comments.map((c) => (
+                <div key={c.id} className="bg-gray-50 rounded-xl p-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-medium text-gray-800 text-sm">{c.author_name}</span>
+                    <span className="text-xs text-gray-400">
+                      {new Date(c.created_at).toLocaleDateString('zh-CN')}
+                    </span>
+                  </div>
+                  <p className="text-gray-600 text-sm">{c.content}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* 发表评论 */}
+            <form onSubmit={handleComment} className="space-y-2">
+              <input
+                type="text"
+                value={authorName}
+                onChange={(e) => setAuthorName(e.target.value)}
+                placeholder="昵称"
+                className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm"
+              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="说点什么..."
+                  className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-sm"
+                />
+                <button 
+                  type="submit"
+                  className="btn btn-primary px-4 py-2 text-sm"
+                >
+                  发
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
             <a 
               href={work.demo_url}
               target="_blank"
