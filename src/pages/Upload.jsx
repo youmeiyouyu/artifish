@@ -63,6 +63,11 @@ export default function Upload() {
         throw new Error(`昵称不能超过${securityConfig.maxNicknameLength}个字符`)
       }
 
+      // 没有图片就报错
+      if (!form.imageFile) {
+        throw new Error('请上传作品截图')
+      }
+
       let imageUrl = ''
 
       // 上传图片到 Storage
@@ -154,7 +159,7 @@ export default function Upload() {
                 <svg className="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828l0 0 8 8a2 2 0 001.414.586l4 4m0 0l8-8m-8 8l8-8" />
                 </svg>
-                <p className="text-gray-500 mb-1">点击上传图片</p>
+                <p className="text-gray-500 mb-1">点击上传作品截图（必填）</p>
                 <p className="text-xs text-gray-400">支持 JPG、PNG、GIF、WebP，最大 5MB</p>
               </>
             )}
