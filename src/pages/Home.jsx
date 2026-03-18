@@ -3,55 +3,95 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 
 const categories = ['全部', 'React', 'Vue', 'UniApp', 'Taro', 'React Native', '其他']
+const tabs = [
+  { key: 'latest', label: '最新' },
+  { key: 'hot', label: '热门' },
+]
 
 export default function Home() {
   const [works, setWorks] = useState([])
   const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState('全部')
+  const [activeTab, setActiveTab] = useState('latest')
+  const [searchKeyword, setSearchKeyword] = useState('')
 
   useEffect(() => {
     fetchWorks()
-  }, [])
+  }, [activeTab])
 
   const fetchWorks = async () => {
     setLoading(true)
-    const { data, error } = await supabase
+    let query = supabase
       .from('works')
       .select('*')
-      .order('created_at', { ascending: false })
     
+    // 排序
+    if (activeTab === 'hot') {
+      query = query.order('likes', { ascending: false })
+    } else {
+      query = query.order('created_at', { ascending: false })
+    }
+    
+    const { data } = await query
     if (data) setWorks(data)
     setLoading(false)
   }
 
-  // 过滤分类
-  const filteredWorks = activeCategory === '全部' 
-    ? works 
-    : works.filter(w => w.tech_stack?.includes(activeCategory))
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    )
-  }
+  // 搜索过滤
+  const filteredWorks = works.filter(w => {
+    const matchCategory = activeCategory === '全部' || w.tech_stack?.includes(activeCategory)
+    const matchSearch = !searchKeyword || 
+      w.title?.includes(searchKeyword) || 
+      w.description?.includes(searchKeyword) ||
+      w.author_name?.includes(searchKeyword)
+    return matchCategory && matchSearch
+  })
 
   return (
     <div className="animate-fadeIn">
-      {/* 分类标签 */}
-      <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
-        {categories.map((category) => (
+      {/* 搜索框 */}
+      <div className="mb-6">
+        <input
+          type="text"
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+          placeholder="搜索作品..."
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-lg"
+        />
+      </div>
+
+      {/* 标签切换 */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex gap-2 overflow-x-auto">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setActiveCategory(category)}
+              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                activeCategory === category
+                  ? 'bg-primary text-white shadow-md'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 热门/最新 切换 */}
+      <div className="flex gap-4 mb-6 border-b border-gray-100">
+        {tabs.map((tab) => (
           <button
-            key={category}
-            onClick={() => setActiveCategory(category)}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-              activeCategory === category
-                ? 'bg-primary text-white shadow-md'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`pb-3 text-sm font-medium border-b-2 transition-all ${
+              activeTab === tab.key
+                ? 'border-primary text-primary'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
-            {category}
+            {tab.label}
           </button>
         ))}
       </div>
@@ -59,11 +99,8 @@ export default function Home() {
       {/* 空状态 */}
       {filteredWorks.length === 0 && (
         <div className="text-center py-20">
-          <div className="text-6xl mb-4">🦐</div>
-          <p className="text-gray-500 mb-2">还没有作品</p>
-          <Link to="/upload" className="text-primary hover:underline">
-            上传第一个作品
-          </Link>
+          <div className="text-6xl mb-4">🔍</div>
+          <p className="text-gray-500">没有找到相关作品</p>
         </div>
       )}
 
@@ -78,29 +115,19 @@ export default function Home() {
             <div className="card-hover bg-white rounded-2xl overflow-hidden border border-gray-100">
               {/* 图片 */}
               <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
-                {work.image_url && !work.image_url.includes('picsum.photos') ? (
+                {!work.image_url || work.image_url.includes('picsum') ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-4xl">📱</span>
+                  </div>
+                ) : (
                   <img 
                     src={work.image_url} 
                     alt={work.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-3 bg-primary/20 rounded-full flex items-center justify-center">
-                        <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                      </div>
-                      <p className="text-sm text-primary font-medium">点击查看演示</p>
-                    </div>
-                  </div>
                 )}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                  <span className="opacity-0 group-hover:opacity-100 text-white font-medium bg-black/30 px-4 py-2 rounded-lg backdrop-blur-sm transition-opacity">
-                    查看详情
-                  </span>
+                <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+                  ❤️ {work.likes || 0}
                 </div>
               </div>
               
@@ -109,7 +136,7 @@ export default function Home() {
                 <h3 className="font-semibold text-gray-800 mb-1 group-hover:text-primary transition-colors">
                   {work.title}
                 </h3>
-                <p className="text-sm text-gray-500 mb-3 line-clamp-2">
+                <p className="text-sm text-gray-500 mb-2 line-clamp-2">
                   {work.description}
                 </p>
                 
@@ -117,24 +144,19 @@ export default function Home() {
                   <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">
                     {work.tech_stack || '未分类'}
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <Link 
+                    to={`/profile/${work.author_name}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-xs text-gray-400 hover:text-primary"
+                  >
                     by {work.author_name}
-                  </span>
+                  </Link>
                 </div>
               </div>
             </div>
           </Link>
         ))}
       </div>
-
-      {/* 加载更多 */}
-      {filteredWorks.length > 0 && (
-        <div className="text-center mt-12">
-          <button className="btn btn-outline">
-            加载更多
-          </button>
-        </div>
-      )}
     </div>
   )
 }

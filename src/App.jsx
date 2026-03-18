@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Upload from './pages/Upload'
 import WorkDetail from './pages/WorkDetail'
+import Profile from './pages/Profile'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/upload" element={<Upload />} />
             <Route path="/work/:id" element={<WorkDetail />} />
+            <Route path="/profile/:authorName" element={<Profile />} />
           </Routes>
         </main>
       </div>
