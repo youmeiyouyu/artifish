@@ -24,18 +24,23 @@ export default function Home() {
     e.preventDefault()
     e.stopPropagation()
     
-    if (likedWorks.includes(workId)) return
-    
-    const newLiked = [...likedWorks, workId]
-    setLikedWorks(newLiked)
-    localStorage.setItem('likedWorks', JSON.stringify(newLiked))
-    
-    // 更新数据库
     const { data: work } = await supabase.from('works').select('likes').eq('id', workId).single()
-    if (work) {
-      await supabase.from('works').update({ likes: (work.likes || 0) + 1 }).eq('id', workId)
-      fetchWorks()
+    const currentLikes = work?.likes || 0
+    
+    if (likedWorks.includes(workId)) {
+      // 取消点赞
+      const newLiked = likedWorks.filter(id => id !== workId)
+      setLikedWorks(newLiked)
+      localStorage.setItem('likedWorks', JSON.stringify(newLiked))
+      await supabase.from('works').update({ likes: Math.max(0, currentLikes - 1) }).eq('id', workId)
+    } else {
+      // 点赞
+      const newLiked = [...likedWorks, workId]
+      setLikedWorks(newLiked)
+      localStorage.setItem('likedWorks', JSON.stringify(newLiked))
+      await supabase.from('works').update({ likes: currentLikes + 1 }).eq('id', workId)
     }
+    fetchWorks()
   }
 
   useEffect(() => {

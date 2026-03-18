@@ -9,11 +9,34 @@ export default function WorkDetail() {
   const [comments, setComments] = useState([])
   const [comment, setComment] = useState('')
   const [authorName, setAuthorName] = useState('')
+  const [liked, setLiked] = useState(() => {
+    const saved = localStorage.getItem('likedWorks') || '[]'
+    return JSON.parse(saved).includes(id)
+  })
 
   useEffect(() => {
     fetchWork()
     fetchComments()
   }, [id])
+
+  const handleLike = async () => {
+    const { data: workData } = await supabase.from('works').select('likes').eq('id', id).single()
+    const currentLikes = workData?.likes || 0
+    
+    const newLiked = !liked
+    setLiked(newLiked)
+    
+    const saved = JSON.parse(localStorage.getItem('likedWorks') || '[]')
+    const newSaved = newLiked 
+      ? [...saved, id] 
+      : saved.filter(wid => wid !== id)
+    localStorage.setItem('likedWorks', JSON.stringify(newSaved))
+    
+    await supabase.from('works').update({ 
+      likes: newLiked ? currentLikes + 1 : Math.max(0, currentLikes - 1) 
+    }).eq('id', id)
+    fetchWork()
+  }
 
   const fetchWork = async () => {
     const { data } = await supabase
@@ -91,6 +114,19 @@ export default function WorkDetail() {
               <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
                 {work.tech_stack || '未分类'}
               </span>
+              <button 
+                onClick={handleLike}
+                className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium transition-all ${
+                  liked 
+                    ? 'bg-red-500 text-white' 
+                    : 'bg-gray-100 text-gray-600 hover:bg-red-500 hover:text-white'
+                }`}
+              >
+                <svg className="w-4 h-4" fill={liked ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                {work.likes || 0}
+              </button>
               <Link 
                 to={`/profile/${work.author_name}`}
                 className="text-sm text-gray-400 hover:text-primary"
