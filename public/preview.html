@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Button 按钮组件</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; background: #f8f9fa; padding: 40px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { color: #1a1a1a; margin-bottom: 8px; font-size: 28px; }
+    .subtitle { color: #666; margin-bottom: 30px; font-size: 14px; }
+    .tag { display: inline-block; padding: 4px 12px; background: linear-gradient(107deg, #FF7C3C, #FF5E1A); color: white; border-radius: 20px; font-size: 12px; margin-bottom: 20px; }
+    .card { background: white; border-radius: 12px; padding: 32px; margin: 16px 0; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    h2 { color: #333; margin: 30px 0 15px; font-size: 18px; }
+    .btn-group { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0 20px; height: 40px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-primary { background: linear-gradient(107deg, #FF7C3C, #FF5E1A); color: white; }
+    .btn-default { background: white; border: 1px solid #d9d9d9; color: #333; }
+    .btn-sm { height: 32px; padding: 0 16px; }
+    .btn-lg { height: 48px; padding: 0 28px; font-size: 16px; border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+    th { background: #fafafa; color: #666; font-size: 13px; }
+    td { color: #333; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="tag">呼吸风格</span>
+    <h1>Button 按钮组件</h1>
+    <p class="subtitle">基于 MasterGo 设计规范还原 · React + Ant Design</p>
+    
+    <div class="card">
+      <h2>主按钮 Primary</h2>
+      <div class="btn-group">
+        <button class="btn btn-primary">主要按钮</button>
+        <button class="btn btn-primary btn-sm">小按钮</button>
+        <button class="btn btn-primary btn-lg">大按钮</button>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>次按钮 Default</h2>
+      <div class="btn-group">
+        <button class="btn btn-default">次要按钮</button>
+        <button class="btn btn-default btn-sm">小按钮</button>
+        <button class="btn btn-default btn-lg">大按钮</button>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>设计规范</h2>
+      <table>
+        <tr><th>属性</th><th>大</th><th>标准</th><th>小</th></tr>
+        <tr><td>高度</td><td>48px</td><td>40px</td><td>32px</td></tr>
+        <tr><td>字号</td><td>16px</td><td>14px</td><td>14px</td></tr>
+        <tr><td>圆角</td><td>10px</td><td>8px</td><td>6px</td></tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
