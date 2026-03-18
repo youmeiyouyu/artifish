@@ -23,6 +23,14 @@ export default function Navbar() {
             >
               发现
             </Link>
+            <a 
+              href="/button-preview.html"
+              target="_blank"
+              rel="noopener"
+              className="text-gray-600 hover:text-primary transition-colors font-medium"
+            >
+              组件
+            </a>
             <Link 
               to="/upload" 
               className="btn btn-primary flex items-center gap-2"
