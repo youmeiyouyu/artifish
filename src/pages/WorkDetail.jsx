@@ -103,14 +103,17 @@ export default function WorkDetail() {
         返回
       </Link>
 
-      {/* 作品大图 */}
-      <div className="bg-gray-100 rounded-2xl overflow-hidden mb-6">
-        <img 
-          src={work.image_url} 
-          alt={work.title}
-          className="w-full"
-        />
-      </div>
+      {/* 作品演示 */}
+      {work.demo_url && (
+        <div className="bg-gray-100 rounded-2xl overflow-hidden mb-6 border border-gray-200">
+          <iframe 
+            src={work.demo_url}
+            title={work.title}
+            className="w-full"
+            style={{ height: '500px' }}
+          />
+        </div>
+      )}
 
       {/* 作品信息 */}
       <div className="mb-8">
