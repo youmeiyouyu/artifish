@@ -82,7 +82,7 @@ export default function Upload() {
           <textarea
             value={form.description}
             onChange={(e) => setForm({...form, description: e.target.value})}
-           介绍一下你的作品..."
+            placeholder="介绍一下你的作品..."
             rows={3}
             className="w-full px-4 py-3 rounded-lg border border-gray-200 input-focus resize-none"
           />
