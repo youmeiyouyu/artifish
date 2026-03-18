@@ -1,20 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
   <defs>
     <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#FF7C3C"/>
       <stop offset="100%" style="stop-color:#FF5E1A"/>
     </linearGradient>
   </defs>
-  <!-- 虾身 -->
-  <path d="M25 50 Q20 35 35 30 Q50 25 65 35 Q80 45 75 60 Q70 75 55 80 Q40 85 30 75 Q20 65 25 50" fill="url(#grad)"/>
-  <!-- 虾头 -->
-  <circle cx="35" cy="38" r="8" fill="url(#grad)"/>
-  <!-- 虾尾 -->
-  <path d="M70 55 Q85 50 80 65 Q75 75 65 70" fill="url(#grad)"/>
-  <!-- 眼睛 -->
-  <circle cx="32" cy="35" r="2" fill="white"/>
-  <circle cx="38" cy="35" r="2" fill="white"/>
-  <!-- 触角 -->
-  <path d="M30 32 Q20 20 25 15" stroke="url(#grad)" stroke-width="2" fill="none"/>
-  <path d="M40 32 Q45 20 40 15" stroke="url(#grad)" stroke-width="2" fill="none"/>
+  <!-- 圆形背景 -->
+  <circle cx="60" cy="60" r="50" fill="url(#grad)"/>
+  <!-- A 字母 -->
+  <path d="M35 80 L60 30 L85 80 M42 65 L78 65" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- 鱼鳍小细节 -->
+  <path d="M20 55 Q15 45 25 40" stroke="url(#grad)" stroke-width="4" stroke-linecap="round" fill="none"/>
 </svg>

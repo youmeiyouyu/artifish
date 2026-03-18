@@ -9,7 +9,7 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-2 group">
             <img src="/logo.svg" alt="Artifish" className="w-8 h-8" />
             <span className="text-lg font-semibold text-gray-800">
-              Artifish
+              ArtFish <span className="text-primary">Design</span>
             </span>
           </Link>
 
