@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { supabase, securityConfig, sanitizeInput, validateImage } from '../lib/supabase'
+import { supabase, securityConfig, sanitizeInput } from '../lib/supabase'
 
 export default function Upload() {
   const navigate = useNavigate()
@@ -17,17 +17,16 @@ export default function Upload() {
     authorName: '',
   })
 
-  // 选择图片
+  // 选择图片（可选）
   const handleFileChange = (e) => {
     const file = e.target.files[0]
     setError(null)
     
     if (!file) return
     
-    // 验证图片
-    const validation = validateImage(file)
-    if (!validation.valid) {
-      setError(validation.error)
+    // 简单验证
+    if (file.size > 5 * 1024 * 1024) {
+      setError('文件大小不能超过 5MB')
       return
     }
     
@@ -35,8 +34,6 @@ export default function Upload() {
     const reader = new FileReader()
     reader.onload = (e) => setPreview(e.target.result)
     reader.readAsDataURL(file)
-    
-    // 存储文件引用
     setForm({ ...form, imageFile: file })
   }
 
@@ -51,43 +48,33 @@ export default function Upload() {
         throw new Error('请填写必填字段')
       }
 
-      // 标题安全过滤
+      // 验证演示链接（必填）
+      if (!form.demoUrl) {
+        throw new Error('请填写演示地址，让用户能预览你的作品')
+      }
+
       const title = sanitizeInput(form.title)
-      if (title.length > securityConfig.maxTitleLength) {
-        throw new Error(`标题不能超过${securityConfig.maxTitleLength}个字符`)
-      }
-
-      // 昵称安全过滤
       const authorName = sanitizeInput(form.authorName)
-      if (authorName.length > securityConfig.maxNicknameLength) {
-        throw new Error(`昵称不能超过${securityConfig.maxNicknameLength}个字符`)
-      }
-
-      // 没有图片就报错
-      if (!form.imageFile) {
-        throw new Error('请上传作品截图')
-      }
+      const demoUrl = sanitizeInput(form.demoUrl)
 
       let imageUrl = ''
 
-      // 上传图片到 Storage
+      // 上传图片（可选）
       if (form.imageFile) {
         const file = form.imageFile
         const fileExt = file.name.split('.').pop()
         const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`
         
-        const { data, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('works')
           .upload(fileName, file)
 
-        if (uploadError) throw new Error('图片上传失败')
-
-        // 获取公开 URL
-        const { data: urlData } = supabase.storage
-          .from('works')
-          .getPublicUrl(fileName)
-        
-        imageUrl = urlData.publicUrl
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage
+            .from('works')
+            .getPublicUrl(fileName)
+          imageUrl = urlData.publicUrl
+        }
       }
 
       // 保存到数据库
@@ -95,7 +82,7 @@ export default function Upload() {
         title,
         description: sanitizeInput(form.description).slice(0, securityConfig.maxDescLength),
         tech_stack: sanitizeInput(form.techStack),
-        demo_url: sanitizeInput(form.demoUrl),
+        demo_url: demoUrl,
         code_url: sanitizeInput(form.codeUrl),
         author_name: authorName,
         image_url: imageUrl || `https://picsum.photos/seed/${Date.now()}/800/600`,
@@ -136,40 +123,10 @@ export default function Upload() {
       )}
       
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* 作品截图 */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            作品截图 *
-          </label>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            accept="image/jpeg,image/png,image/gif,image/webp"
-            className="hidden"
-          />
-          <div 
-            onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary transition-colors cursor-pointer"
-          >
-            {preview ? (
-              <img src={preview} alt="预览" className="max-h-48 mx-auto rounded-lg" />
-            ) : (
-              <>
-                <svg className="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828l0 0 8 8a2 2 0 001.414.586l4 4m0 0l8-8m-8 8l8-8" />
-                </svg>
-                <p className="text-gray-500 mb-1">点击上传作品截图（必填）</p>
-                <p className="text-xs text-gray-400">支持 JPG、PNG、GIF、WebP，最大 5MB</p>
-              </>
-            )}
-          </div>
-        </div>
-
         {/* 作品标题 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            作品标题 *
+            作品标题 * <span className="text-gray-400 font-normal">(必填)</span>
           </label>
           <input
             type="text"
@@ -185,7 +142,7 @@ export default function Upload() {
         {/* 作品描述 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            作品描述
+            作品描述 <span className="text-gray-400 font-normal">(选填)</span>
           </label>
           <textarea
             value={form.description}
@@ -200,7 +157,7 @@ export default function Upload() {
         {/* 技术栈 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            技术栈 *
+            技术栈 * <span className="text-gray-400 font-normal">(必填)</span>
           </label>
           <input
             type="text"
@@ -212,24 +169,25 @@ export default function Upload() {
           />
         </div>
 
-        {/* 演示链接 */}
+        {/* 演示链接 - 必填 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            演示地址
+            演示地址 * <span className="text-gray-400 font-normal">(必填，让用户能预览)</span>
           </label>
           <input
             type="url"
             value={form.demoUrl}
             onChange={(e) => setForm({...form, demoUrl: e.target.value})}
-            placeholder="https://"
+            placeholder="https://your-demo-site.com"
             className="w-full px-4 py-3 rounded-lg border border-gray-200 input-focus"
+            required
           />
         </div>
 
         {/* 代码链接 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            代码仓库
+            代码仓库 <span className="text-gray-400 font-normal">(选填)</span>
           </label>
           <input
             type="url"
@@ -240,10 +198,39 @@ export default function Upload() {
           />
         </div>
 
+        {/* 作品截图 - 可选 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            作品截图 <span className="text-gray-400 font-normal">(选填，不填则使用演示链接的预览图)</span>
+          </label>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            className="hidden"
+          />
+          <div 
+            onClick={() => fileInputRef.current?.click()}
+            className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-primary transition-colors cursor-pointer"
+          >
+            {preview ? (
+              <img src={preview} alt="预览" className="max-h-40 mx-auto rounded-lg" />
+            ) : (
+              <>
+                <svg className="w-10 h-10 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828l0 0 8 8a2 2 0 001.414.586l4 4m0 0l8-8m-8 8l8-8" />
+                </svg>
+                <p className="text-gray-500 text-sm">点击上传作品截图（可选）</p>
+              </>
+            )}
+          </div>
+        </div>
+
         {/* 作者名称 */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            作者名称 (Agent ID) *
+            作者名称 (Agent ID) * <span className="text-gray-400 font-normal">(必填)</span>
           </label>
           <input
             type="text"
