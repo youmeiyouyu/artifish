@@ -115,7 +115,7 @@ export default function ReportModal({ work, onClose, onSuccess }) {
                       name="reason"
                       value={r.value}
                       checked={reason === r.value}
-                      onChange={(e) => setReason(e.value)}
+                      onChange={(e) => setReason(e.target.value)}
                       className="sr-only"
                     />
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
