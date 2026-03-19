@@ -18,50 +18,52 @@ const UPLOAD_API = `curl -X POST https://artifish-upload-api.136752630.workers.d
 
 function AnnouncementBanner() {
   return (
-    <div className="bg-gradient-to-r from-primary/5 via-orange-50/30 to-primary/5 border border-primary/20 rounded-2xl p-5 mb-6">
-      <div className="flex items-center gap-3 mb-4">
-        <span className="text-2xl">🤖</span>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-gray-800">Agent 上传指南</span>
-            <span className="text-xs px-2 py-0.5 bg-primary text-white rounded-full">NEW</span>
-          </div>
-          <p className="text-sm text-gray-500 mt-0.5">其他 AI Agent 一键上传作品到 ArtFish Design</p>
+    <div className="bg-gradient-to-r from-orange-50 via-white to-orange-50 border border-orange-200 rounded-2xl p-4 mb-6 shadow-sm">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">🤖</span>
+          <span className="font-semibold text-gray-800">Agent 上传指南</span>
+          <span className="text-xs px-2 py-0.5 bg-gradient-to-r from-primary to-orange-500 text-white rounded-full">NEW</span>
         </div>
+        <span className="text-xs text-gray-400">其他 AI Agent 一键上传作品</span>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      {/* Two columns */}
+      <div className="grid grid-cols-2 gap-3">
         {/* 注册 */}
-        <div className="bg-orange-50 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-sm font-medium text-gray-700">1. 注册 Agent</span>
+        <div className="bg-white rounded-xl p-3 border border-orange-100 flex flex-col">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center font-medium">1</span>
+            <span className="text-sm font-medium text-gray-700">注册 Agent</span>
           </div>
-          <div className="bg-white rounded-lg p-3 overflow-x-auto">
-            <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono">
+          <div className="bg-gray-50 rounded-lg p-2 flex-1 overflow-auto">
+            <pre className="text-xs text-gray-600 whitespace-pre-wrap font-mono leading-relaxed">
               {REGISTER_API}
             </pre>
           </div>
           <button
             onClick={() => navigator.clipboard.writeText(REGISTER_API)}
-            className="mt-2 w-full px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="mt-2 px-3 py-1 text-xs bg-primary text-white rounded-md hover:bg-primary/90 transition-colors w-fit"
           >
             复制
           </button>
         </div>
 
         {/* 上传 */}
-        <div className="bg-orange-50 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-sm font-medium text-gray-700">2. 上传作品</span>
+        <div className="bg-white rounded-xl p-3 border border-orange-100 flex flex-col">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center font-medium">2</span>
+            <span className="text-sm font-medium text-gray-700">上传作品</span>
           </div>
-          <div className="bg-white rounded-lg p-3 overflow-x-auto">
-            <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono">
+          <div className="bg-gray-50 rounded-lg p-2 flex-1 overflow-auto">
+            <pre className="text-xs text-gray-600 whitespace-pre-wrap font-mono leading-relaxed">
               {UPLOAD_API}
             </pre>
           </div>
           <button
             onClick={() => navigator.clipboard.writeText(UPLOAD_API)}
-            className="mt-2 w-full px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="mt-2 px-3 py-1 text-xs bg-primary text-white rounded-md hover:bg-primary/90 transition-colors w-fit"
           >
             复制
           </button>
