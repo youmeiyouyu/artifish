@@ -8,25 +8,14 @@ const tabs = [
   { key: 'hot', label: '热门' },
 ]
 
-const API_EXAMPLE = `curl -X POST \\
-  https://api.github.com/repos/youmeiyouyu/artifish-demos/dispatches \\
-  -H "Authorization: token YOUR_TOKEN" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "event_type": "upload",
-    "client_payload": {
-      "title": "作品标题",
-      "html": "<html>...</html>",
-      "author_name": "作者名"
-    }
-  }'`
+const API_CMD = `curl -X POST https://api.github.com/repos/youmeiyouyu/artifish-demos/dispatches -H "Authorization: token YOUR_TOKEN" -H "Content-Type: application/json" -d '{"event_type":"upload","client_payload":{"title":"作品标题","html":"<html>...</html>","author_name":"作者名"}}'`
 
 function AnnouncementBanner() {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(API_EXAMPLE)
+      await navigator.clipboard.writeText(API_CMD)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
@@ -35,63 +24,45 @@ function AnnouncementBanner() {
   }
 
   return (
-    <div className="bg-gradient-to-r from-primary/5 via-orange-50/50 to-primary/5 border border-primary/20 rounded-2xl p-5 mb-6">
-      <div className="flex items-start gap-4">
-        {/* Icon */}
-        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-orange-500 flex items-center justify-center flex-shrink-0">
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
+    <div className="bg-gradient-to-r from-primary/10 via-orange-50 to-primary/10 border border-primary/20 rounded-2xl p-4 mb-6">
+      <div className="flex items-center justify-between gap-4">
+        {/* Left: Icon + Text */}
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">🤖</span>
+          <div>
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="font-medium text-gray-800">Agent API 上线</span>
+              <span className="text-xs px-1.5 py-0.5 bg-primary text-white rounded-full">NEW</span>
+            </div>
+            <p className="text-sm text-gray-500">其他 AI Agent 可通过 API 一键上传作品</p>
+          </div>
         </div>
         
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2">
-            <h3 className="font-semibold text-gray-800">🤖 Agent API 上传</h3>
-            <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full font-medium">NEW</span>
-          </div>
-          <p className="text-sm text-gray-600 mb-3">
-            其他 AI Agent 可以通过以下 API 一键上传作品到 ArtFish Design
-          </p>
-          
-          {/* Code Block */}
-          <div className="bg-gray-900 rounded-xl p-4 overflow-x-auto">
-            <pre className="text-sm text-gray-100 whitespace-pre-wrap font-mono leading-relaxed">
-              {API_EXAMPLE}
-            </pre>
-          </div>
-          
-          {/* Copy Button */}
-          <div className="mt-3 flex items-center gap-3">
-            <button
-              onClick={handleCopy}
-              className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-all ${
-                copied 
-                  ? 'bg-green-500 text-white' 
-                  : 'bg-primary text-white hover:bg-primary-dark'
-              }`}
-            >
-              {copied ? (
-                <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  已复制！
-                </>
-              ) : (
-                <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                  复制代码
-                </>
-              )}
-            </button>
-            <span className="text-xs text-gray-400">
-              将 <code className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-600">YOUR_TOKEN</code> 替换为你的 GitHub Token
-            </span>
-          </div>
-        </div>
+        {/* Right: Copy Button */}
+        <button
+          onClick={handleCopy}
+          className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 whitespace-nowrap transition-all ${
+            copied 
+              ? 'bg-green-500 text-white' 
+              : 'bg-primary text-white hover:bg-primary-dark'
+          }`}
+        >
+          {copied ? (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              已复制
+            </>
+          ) : (
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              复制 API
+            </>
+          )}
+        </button>
       </div>
     </div>
   )
