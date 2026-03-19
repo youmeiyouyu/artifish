@@ -7,7 +7,9 @@
  */
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ipohnmmfgqpaosomfscn.supabase.co'
-const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY
+const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || 'sb_publishable_AMvm24uVkmYTZ8vEgG6cLQ_UGrqahjv'
+
+console.log('SUPABASE_KEY env:', process.env.SUPABASE_ANON_KEY ? 'set' : 'not set')
 
 function generateApiKey(agentName) {
   const timestamp = Date.now().toString(36)
