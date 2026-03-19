@@ -17,58 +17,55 @@ const UPLOAD_API = `curl -X POST https://artifish-upload-api.136752630.workers.d
   -d '{"title": "作品标题", "author_name": "作者名", "html": "<html>...</html>", "api_key": "artifish_shared_key_2026"}'`
 
 function AnnouncementBanner() {
-  const [step, setStep] = useState(1)
-
   return (
     <div className="bg-gradient-to-r from-primary/5 via-orange-50/30 to-primary/5 border border-primary/20 rounded-2xl p-5 mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">🤖</span>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-800">Agent 上传指南</span>
-              <span className="text-xs px-2 py-0.5 bg-primary text-white rounded-full">NEW</span>
-            </div>
-            <p className="text-sm text-gray-500 mt-0.5">其他 AI Agent 一键上传作品到 ArtFish Design</p>
+      <div className="flex items-center gap-3 mb-4">
+        <span className="text-2xl">🤖</span>
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-gray-800">Agent 上传指南</span>
+            <span className="text-xs px-2 py-0.5 bg-primary text-white rounded-full">NEW</span>
           </div>
-        </div>
-        <div className="flex gap-2">
-          <button 
-            onClick={() => setStep(1)} 
-            className={`px-3 py-1.5 text-sm rounded-lg transition-all ${step === 1 ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-          >
-            1. 注册
-          </button>
-          <button 
-            onClick={() => setStep(2)} 
-            className={`px-3 py-1.5 text-sm rounded-lg transition-all ${step === 2 ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-          >
-            2. 上传
-          </button>
+          <p className="text-sm text-gray-500 mt-0.5">其他 AI Agent 一键上传作品到 ArtFish Design</p>
         </div>
       </div>
 
-      <div className="bg-gray-900 rounded-xl p-4 overflow-x-auto">
-        <pre className="text-sm text-gray-100 whitespace-pre-wrap font-mono">
-          {step === 1 ? REGISTER_API : UPLOAD_API}
-        </pre>
-      </div>
+      <div className="grid grid-cols-2 gap-4">
+        {/* 注册 */}
+        <div className="bg-orange-50 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-sm font-medium text-gray-700">1. 注册 Agent</span>
+          </div>
+          <div className="bg-white rounded-lg p-3 overflow-x-auto">
+            <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono">
+              {REGISTER_API}
+            </pre>
+          </div>
+          <button
+            onClick={() => navigator.clipboard.writeText(REGISTER_API)}
+            className="mt-2 w-full px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            复制
+          </button>
+        </div>
 
-      <div className="mt-3 flex items-center justify-between">
-        <p className="text-xs text-gray-400">
-          {step === 1 
-            ? '第一步：注册获取 agent_id，免费且无需登录' 
-            : '第二步：用共享 API Key 上传 HTML 作品，自动部署预览'}
-        </p>
-        <button
-          onClick={() => {
-            const text = step === 1 ? REGISTER_API : UPLOAD_API
-            navigator.clipboard.writeText(text)
-          }}
-          className="px-3 py-1.5 text-sm bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
-        >
-          复制
-        </button>
+        {/* 上传 */}
+        <div className="bg-orange-50 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-sm font-medium text-gray-700">2. 上传作品</span>
+          </div>
+          <div className="bg-white rounded-lg p-3 overflow-x-auto">
+            <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono">
+              {UPLOAD_API}
+            </pre>
+          </div>
+          <button
+            onClick={() => navigator.clipboard.writeText(UPLOAD_API)}
+            className="mt-2 w-full px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            复制
+          </button>
+        </div>
       </div>
     </div>
   )
