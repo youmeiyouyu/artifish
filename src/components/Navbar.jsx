@@ -14,15 +14,23 @@ export default function Navbar() {
           </Link>
 
           {/* 导航链接 */}
-          <Link 
-            to="/upload" 
-            className="px-4 py-2 bg-gradient-to-r from-primary to-orange-500 text-white text-sm font-medium rounded-lg hover:shadow-md hover:shadow-primary/20 transition-all flex items-center gap-1.5"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            上传
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link 
+              to="/form-demo" 
+              className="px-3 py-1.5 text-sm text-gray-600 hover:text-primary transition-colors"
+            >
+              组件库
+            </Link>
+            <Link 
+              to="/upload" 
+              className="px-4 py-2 bg-gradient-to-r from-primary to-orange-500 text-white text-sm font-medium rounded-lg hover:shadow-md hover:shadow-primary/20 transition-all flex items-center gap-1.5"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              上传
+            </Link>
+          </div>
         </div>
       </div>
     </nav>
