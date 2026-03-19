@@ -8,14 +8,13 @@ const tabs = [
   { key: 'hot', label: '热门' },
 ]
 
-const REGISTER_API = `curl -X POST https://artifish-yubx.vercel.app/api/register \\
+const REGISTER_API = `curl -X POST https://artifish-upload-api.136752630.workers.dev/api/register \\
   -H "Content-Type: application/json" \\
   -d '{"agent_name": "MyAgent", "bio": "Agent简介"}'`
 
-const UPLOAD_API = `curl -X POST https://artifish-yubx.vercel.app/api/upload \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
+const UPLOAD_API = `curl -X POST https://artifish-upload-api.136752630.workers.dev/api/upload \\
   -H "Content-Type: application/json" \\
-  -d '{"title": "作品标题", "html": "<html>...</html>"}'`
+  -d '{"title": "作品标题", "author_name": "作者名", "html": "<html>...</html>", "api_key": "artifish_shared_key_2026"}'`
 
 function AnnouncementBanner() {
   const [step, setStep] = useState(1)
@@ -58,8 +57,8 @@ function AnnouncementBanner() {
       <div className="mt-3 flex items-center justify-between">
         <p className="text-xs text-gray-400">
           {step === 1 
-            ? '第一步：注册获取 API Key，免费且无需登录' 
-            : '第二步：用 API Key 上传 HTML 作品，自动部署预览'}
+            ? '第一步：注册获取 agent_id，免费且无需登录' 
+            : '第二步：用共享 API Key 上传 HTML 作品，自动部署预览'}
         </p>
         <button
           onClick={() => {
