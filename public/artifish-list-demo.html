@@ -5,146 +5,156 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ArtFish 组件库 - 通用列表页</title>
   <style>
+    /* ===== ArtFish 组件库规范 - 呼吸风格 ===== */
     :root {
       --primary: #FF7C3C;
-      --primary-dark: #ea6a2d;
-      --primary-light: rgba(255, 124, 60, 0.1);
-      --success: #22c55e;
-      --success-light: rgba(34, 197, 94, 0.1);
-      --warning: #f59e0b;
-      --warning-light: rgba(245, 158, 11, 0.1);
-      --error: #ef4444;
-      --error-light: rgba(239, 68, 68, 0.1);
-      --info: #3b82f6;
-      --info-light: rgba(59, 130, 246, 0.1);
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-400: #9ca3af;
-      --gray-500: #6b7280;
-      --gray-600: #4b5563;
-      --gray-700: #374151;
-      --gray-800: #1f2937;
-      --radius-sm: 6px;
-      --radius-md: 8px;
-      --radius-lg: 12px;
-      --radius-xl: 16px;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --primary-dark: #FF5E1A;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e8e8e8;
+      --gray-300: #d9d9d9;
+      --gray-400: #bfbfbf;
+      --gray-500: #8c8c8c;
+      --gray-600: #595959;
+      --gray-700: #404040;
+      --gray-800: #262626;
+      --radius: 8px; /* 呼吸风格圆角 */
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
+    
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.6; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+    body { font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--gray-100); color: var(--gray-800); font-size: 14px; line-height: 1.5; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
     
     /* Header */
-    .page-header { background: linear-gradient(107deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 1.5rem 2rem; border-radius: var(--radius-xl); margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
-    .page-header h1 { font-size: 1.5rem; font-weight: 600; }
-    .page-header button { background: white; color: var(--primary); border: none; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
-    .page-header button:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .header { background: linear-gradient(104deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 20px 24px; border-radius: var(--radius); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { font-size: 18px; font-weight: 600; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 16px; height: 32px; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-primary { background: linear-gradient(104deg, var(--primary), var(--primary-dark)); color: white; }
+    .btn-primary:hover { box-shadow: 0 4px 12px rgba(255,124,60,0.4); }
+    .btn-default { background: white; border: 1px solid var(--gray-300); color: var(--gray-700); }
+    .btn-default:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-text { background: transparent; color: var(--gray-600); padding: 0 12px; }
+    .btn-text:hover { color: var(--primary); }
+    .btn-sm { height: 24px; padding: 0 10px; font-size: 12px; border-radius: 4px; }
     
     /* Card */
-    .card { background: white; border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; overflow: hidden; }
-    .card-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-100); display: flex; justify-content: space-between; align-items: center; }
-    .card-title { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
-    .card-title::before { content: ''; width: 4px; height: 1rem; background: var(--primary); border-radius: 2px; }
+    .card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden; }
+    .card-header { padding: 16px 20px; border-bottom: 1px solid var(--gray-100); display: flex; justify-content: space-between; align-items: center; }
+    .card-title { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .card-title::before { content: ''; width: 4px; height: 14px; background: linear-gradient(104deg, var(--primary), var(--primary-dark)); border-radius: 2px; }
     
     /* Filter */
-    .filter-bar { padding: 1rem 1.5rem; background: var(--gray-50); display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
-    .search-input { flex: 1; min-width: 200px; padding: 0.5rem 0.875rem; border: 1px solid var(--gray-200); border-radius: var(--radius-md); font-size: 0.875rem; }
-    .search-input:focus { outline: none; border-color: var(--primary); }
-    .filter-select { padding: 0.5rem 2rem 0.5rem 0.875rem; border: 1px solid var(--gray-200); border-radius: var(--radius-md); font-size: 0.875rem; background: white; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+    .filter-bar { padding: 16px 20px; background: var(--gray-50); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .input { padding: 6px 12px; border: 1px solid var(--gray-200); border-radius: var(--radius); font-size: 14px; outline: none; transition: all 0.2s; }
+    .input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(255,124,60,0.1); }
+    .input-search { width: 200px; }
+    .select { padding: 6px 28px 6px 12px; border: 1px solid var(--gray-200); border-radius: var(--radius); font-size: 14px; background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238c8c8c' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 10px center; appearance: none; cursor: pointer; outline: none; }
+    .select:focus { border-color: var(--primary); }
     
-    /* Stats */
-    .stats { display: flex; gap: 2rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--gray-100); }
+    /* Stats Row */
+    .stats-row { display: flex; padding: 16px 20px; gap: 32px; border-bottom: 1px solid var(--gray-100); }
     .stat { text-align: center; }
-    .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
-    .stat-label { font-size: 0.75rem; color: var(--gray-500); }
+    .stat-value { font-size: 20px; font-weight: 700; color: var(--primary); }
+    .stat-label { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
     
     /* Table */
     .table-wrapper { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; padding: 0.875rem 1rem; background: var(--gray-50); font-size: 0.75rem; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--gray-100); }
-    td { padding: 1rem; font-size: 0.875rem; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
-    tr:hover { background: var(--gray-50); }
+    th { text-align: left; padding: 12px 16px; background: var(--gray-50); font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--gray-100); }
+    td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+    tr:hover td { background: #fff9f5; }
     tr:last-child td { border-bottom: none; }
     
-    /* Avatar */
-    .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.875rem; }
-    .user-cell { display: flex; align-items: center; gap: 0.75rem; }
-    .user-info .name { font-weight: 500; }
-    .user-info .email { font-size: 0.75rem; color: var(--gray-500); }
+    /* User Cell */
+    .user-cell { display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(104deg, var(--primary), var(--primary-dark)); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+    .avatar.secondary { background: var(--gray-200); color: var(--gray-600); }
+    .user-name { font-weight: 500; }
+    .user-email { font-size: 12px; color: var(--gray-500); }
     
     /* Badge */
-    .badge { display: inline-flex; padding: 0.25rem 0.625rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500; }
-    .badge-success { background: var(--success-light); color: #166534; }
-    .badge-warning { background: var(--warning-light); color: #92400e; }
-    .badge-error { background: var(--error-light); color: #991b1b; }
+    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+    .badge-primary { background: rgba(255,124,60,0.1); color: var(--primary); }
+    .badge-success { background: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f; }
+    .badge-warning { background: #fffbe6; color: #faad14; border: 1px solid #ffe58f; }
+    .badge-error { background: #fff2f0; color: #ff4d4f; border: 1px solid #ffccc7; }
     .badge-gray { background: var(--gray-100); color: var(--gray-600); }
     
     /* Tags */
-    .tags { display: flex; flex-wrap: wrap; gap: 0.375rem; }
-    .tag { padding: 0.125rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; background: var(--primary-light); color: var(--primary); }
+    .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .tag { padding: 1px 6px; background: rgba(255,124,60,0.08); color: var(--primary); border-radius: 4px; font-size: 12px; }
     
     /* Progress */
-    .progress { width: 80px; height: 6px; background: var(--gray-100); border-radius: var(--radius-full); overflow: hidden; }
-    .progress-bar { height: 100%; background: var(--primary); border-radius: var(--radius-full); }
+    .progress-wrap { display: flex; align-items: center; gap: 8px; }
+    .progress { width: 60px; height: 6px; background: var(--gray-100); border-radius: 3px; overflow: hidden; }
+    .progress-bar { height: 100%; background: linear-gradient(104deg, var(--primary), var(--primary-dark)); border-radius: 3px; }
+    .progress-text { font-size: 12px; color: var(--gray-500); }
     
     /* Actions */
-    .actions { display: flex; gap: 0.5rem; }
-    .action-btn { width: 32px; height: 32px; border-radius: var(--radius-md); border: 1px solid var(--gray-200); background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 0.875rem; }
+    .actions { display: flex; gap: 4px; }
+    .action-btn { width: 28px; height: 28px; border-radius: var(--radius); border: 1px solid var(--gray-200); background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: all 0.2s; }
     .action-btn:hover { border-color: var(--primary); color: var(--primary); }
-    .action-btn.danger:hover { border-color: var(--error); color: var(--error); }
+    .action-btn.danger:hover { border-color: #ff4d4f; color: #ff4d4f; }
     
     /* Pagination */
-    .pagination { padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--gray-100); }
-    .page-info { font-size: 0.875rem; color: var(--gray-500); }
-    .page-buttons { display: flex; gap: 0.5rem; }
-    .page-btn { padding: 0.5rem 0.875rem; border: 1px solid var(--gray-200); border-radius: var(--radius-md); background: white; font-size: 0.875rem; cursor: pointer; transition: all 0.2s; }
+    .pagination { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--gray-100); }
+    .page-info { font-size: 14px; color: var(--gray-500); }
+    .page-btns { display: flex; gap: 4px; }
+    .page-btn { min-width: 32px; height: 32px; padding: 0 10px; border: 1px solid var(--gray-200); border-radius: var(--radius); background: white; font-size: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
     .page-btn:hover { border-color: var(--primary); color: var(--primary); }
-    .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .page-btn.active { background: linear-gradient(104deg, var(--primary), var(--primary-dark)); color: white; border-color: var(--primary); }
     .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     
     /* Checkbox */
-    input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+    input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; border-radius: 4px; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="page-header">
+    <!-- Header -->
+    <div class="header">
       <h1>用户管理</h1>
-      <button>+ 新建用户</button>
+      <button class="btn btn-default" style="background: white;">
+        <span style="font-size: 16px;">+</span> 新建用户
+      </button>
     </div>
     
+    <!-- Card -->
     <div class="card">
       <div class="card-header">
         <div class="card-title">用户列表</div>
-        <span style="font-size: 0.875rem; color: var(--gray-500);">共 28 条记录</span>
+        <span style="font-size: 14px; color: var(--gray-500);">共 28 条记录</span>
       </div>
       
+      <!-- Filter -->
       <div class="filter-bar">
-        <input type="text" class="search-input" placeholder="搜索用户名、邮箱...">
-        <select class="filter-select">
+        <input type="text" class="input input-search" placeholder="搜索用户名、邮箱...">
+        <select class="select">
           <option>全部状态</option>
           <option>活跃</option>
           <option>待审核</option>
           <option>已禁用</option>
         </select>
-        <select class="filter-select">
+        <select class="select">
           <option>全部角色</option>
           <option>管理员</option>
           <option>编辑</option>
           <option>普通用户</option>
         </select>
+        <button class="btn btn-primary">搜索</button>
+        <button class="btn btn-text">重置</button>
       </div>
       
-      <div class="stats">
+      <!-- Stats -->
+      <div class="stats-row">
         <div class="stat"><div class="stat-value">28</div><div class="stat-label">总用户</div></div>
-        <div class="stat"><div class="stat-value" style="color: var(--success)">22</div><div class="stat-label">活跃</div></div>
-        <div class="stat"><div class="stat-value" style="color: var(--warning)">4</div><div class="stat-label">待审核</div></div>
-        <div class="stat"><div class="stat-value" style="color: var(--error)">2</div><div class="stat-label">已禁用</div></div>
+        <div class="stat"><div class="stat-value" style="color: #52c41a;">22</div><div class="stat-label">活跃</div></div>
+        <div class="stat"><div class="stat-value" style="color: #faad14;">4</div><div class="stat-label">待审核</div></div>
+        <div class="stat"><div class="stat-value" style="color: #ff4d4f;">2</div><div class="stat-label">已禁用</div></div>
       </div>
       
+      <!-- Table -->
       <div class="table-wrapper">
         <table>
           <thead>
@@ -156,7 +166,7 @@
               <th>技能</th>
               <th>完成度</th>
               <th>注册时间</th>
-              <th style="width: 120px;">操作</th>
+              <th style="width: 100px;">操作</th>
             </tr>
           </thead>
           <tbody>
@@ -165,13 +175,13 @@
               <td>
                 <div class="user-cell">
                   <div class="avatar">张</div>
-                  <div class="user-info">
-                    <div class="name">张明</div>
-                    <div class="email">zhangming@example.com</div>
+                  <div>
+                    <div class="user-name">张明</div>
+                    <div class="user-email">zhangming@example.com</div>
                   </div>
                 </div>
               </td>
-              <td><span class="badge badge-warning">编辑</span></td>
+              <td><span class="badge badge-primary">编辑</span></td>
               <td><span class="badge badge-success">活跃</span></td>
               <td>
                 <div class="tags">
@@ -180,17 +190,17 @@
                 </div>
               </td>
               <td>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div class="progress-wrap">
                   <div class="progress"><div class="progress-bar" style="width: 85%;"></div></div>
-                  <span style="font-size: 0.75rem; color: var(--gray-500);">85%</span>
+                  <span class="progress-text">85%</span>
                 </div>
               </td>
-              <td style="color: var(--gray-500); font-size: 0.8125rem;">2026-03-15</td>
+              <td style="color: var(--gray-500); font-size: 14px;">2026-03-15</td>
               <td>
                 <div class="actions">
                   <button class="action-btn" title="编辑">✏️</button>
-                  <button class="action-btn" title="查看">👁️</button>
-                  <button class="action-btn danger" title="删除">🗑️</button>
+                  <button class="action-btn" title="查看">👁</button>
+                  <button class="action-btn danger" title="删除">🗑</button>
                 </div>
               </td>
             </tr>
@@ -198,14 +208,14 @@
               <td><input type="checkbox"></td>
               <td>
                 <div class="user-cell">
-                  <div class="avatar">李</div>
-                  <div class="user-info">
-                    <div class="name">李华</div>
-                    <div class="email">lihua@example.com</div>
+                  <div class="avatar secondary">李</div>
+                  <div>
+                    <div class="user-name">李华</div>
+                    <div class="user-email">lihua@example.com</div>
                   </div>
                 </div>
               </td>
-              <td><span class="badge badge-error">已禁用</span></td>
+              <td><span class="badge badge-gray">普通用户</span></td>
               <td><span class="badge badge-error">已禁用</span></td>
               <td>
                 <div class="tags">
@@ -214,17 +224,17 @@
                 </div>
               </td>
               <td>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div class="progress-wrap">
                   <div class="progress"><div class="progress-bar" style="width: 30%;"></div></div>
-                  <span style="font-size: 0.75rem; color: var(--gray-500);">30%</span>
+                  <span class="progress-text">30%</span>
                 </div>
               </td>
-              <td style="color: var(--gray-500); font-size: 0.8125rem;">2026-03-12</td>
+              <td style="color: var(--gray-500); font-size: 14px;">2026-03-12</td>
               <td>
                 <div class="actions">
                   <button class="action-btn" title="编辑">✏️</button>
-                  <button class="action-btn" title="查看">👁️</button>
-                  <button class="action-btn danger" title="删除">🗑️</button>
+                  <button class="action-btn" title="查看">👁</button>
+                  <button class="action-btn danger" title="删除">🗑</button>
                 </div>
               </td>
             </tr>
@@ -232,10 +242,10 @@
               <td><input type="checkbox"></td>
               <td>
                 <div class="user-cell">
-                  <div class="avatar" style="background: var(--info-light); color: var(--info);">王</div>
-                  <div class="user-info">
-                    <div class="name">王芳</div>
-                    <div class="email">wangfang@example.com</div>
+                  <div class="avatar">王</div>
+                  <div>
+                    <div class="user-name">王芳</div>
+                    <div class="user-email">wangfang@example.com</div>
                   </div>
                 </div>
               </td>
@@ -248,17 +258,17 @@
                 </div>
               </td>
               <td>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div class="progress-wrap">
                   <div class="progress"><div class="progress-bar" style="width: 100%;"></div></div>
-                  <span style="font-size: 0.75rem; color: var(--gray-500);">100%</span>
+                  <span class="progress-text">100%</span>
                 </div>
               </td>
-              <td style="color: var(--gray-500); font-size: 0.8125rem;">2026-03-10</td>
+              <td style="color: var(--gray-500); font-size: 14px;">2026-03-10</td>
               <td>
                 <div class="actions">
                   <button class="action-btn" title="编辑">✏️</button>
-                  <button class="action-btn" title="查看">👁️</button>
-                  <button class="action-btn danger" title="删除">🗑️</button>
+                  <button class="action-btn" title="查看">👁</button>
+                  <button class="action-btn danger" title="删除">🗑</button>
                 </div>
               </td>
             </tr>
@@ -266,10 +276,10 @@
               <td><input type="checkbox"></td>
               <td>
                 <div class="user-cell">
-                  <div class="avatar" style="background: var(--warning-light); color: var(--warning);">赵</div>
-                  <div class="user-info">
-                    <div class="name">赵伟</div>
-                    <div class="email">zhaowei@example.com</div>
+                  <div class="avatar secondary">赵</div>
+                  <div>
+                    <div class="user-name">赵伟</div>
+                    <div class="user-email">zhaowei@example.com</div>
                   </div>
                 </div>
               </td>
@@ -281,17 +291,17 @@
                 </div>
               </td>
               <td>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <div class="progress-wrap">
                   <div class="progress"><div class="progress-bar" style="width: 50%;"></div></div>
-                  <span style="font-size: 0.75rem; color: var(--gray-500);">50%</span>
+                  <span class="progress-text">50%</span>
                 </div>
               </td>
-              <td style="color: var(--gray-500); font-size: 0.8125rem;">2026-03-08</td>
+              <td style="color: var(--gray-500); font-size: 14px;">2026-03-08</td>
               <td>
                 <div class="actions">
                   <button class="action-btn" title="编辑">✏️</button>
-                  <button class="action-btn" title="查看">👁️</button>
-                  <button class="action-btn danger" title="删除">🗑️</button>
+                  <button class="action-btn" title="查看">👁</button>
+                  <button class="action-btn danger" title="删除">🗑</button>
                 </div>
               </td>
             </tr>
@@ -299,9 +309,10 @@
         </table>
       </div>
       
+      <!-- Pagination -->
       <div class="pagination">
         <div class="page-info">显示 1-4 条，共 28 条</div>
-        <div class="page-buttons">
+        <div class="page-btns">
           <button class="page-btn" disabled>上一页</button>
           <button class="page-btn active">1</button>
           <button class="page-btn">2</button>
