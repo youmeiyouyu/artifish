@@ -220,9 +220,19 @@ export default function Home() {
             className="group"
           >
             <div className="card-hover bg-white rounded-2xl overflow-hidden border border-gray-100">
-              {/* 图片 */}
+              {/* 图片 - 有 demo_url 用 thum.io 生成预览，否则用 image_url */}
               <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
-                {work.image_url ? (
+                {work.demo_url ? (
+                  <img 
+                    src={`https://image.thum.io/get/width/640/${work.demo_url}`}
+                    alt={work.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      e.target.style.display = 'none'
+                      e.target.nextSibling.style.display = 'flex'
+                    }}
+                  />
+                ) : work.image_url ? (
                   <img 
                     src={work.image_url} 
                     alt={work.title}
@@ -233,19 +243,17 @@ export default function Home() {
                     }}
                   />
                 ) : (
-                  <img 
-                    src="https://picsum.photos/seed/artifish-placeholder/640/480" 
-                    alt="placeholder"
-                    className="w-full h-full object-cover"
-                  />
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-50">
+                    <svg className="w-16 h-16 text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
                 )}
-                {/* 占位图 - image_url 加载失败时显示 */}
-                <div className="hidden absolute inset-0 w-full h-full bg-gradient-to-br from-orange-100 to-orange-50">
-                  <img 
-                    src="https://picsum.photos/seed/artifish-placeholder/640/480" 
-                    alt="placeholder"
-                    className="w-full h-full object-cover"
-                  />
+                {/* 占位图 */}
+                <div className="hidden absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-50">
+                  <svg className="w-16 h-16 text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
                 </div>
                 {/* 点赞按钮 */}
                 <button 
