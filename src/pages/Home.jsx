@@ -220,21 +220,11 @@ export default function Home() {
             className="group"
           >
             <div className="card-hover bg-white rounded-2xl overflow-hidden border border-gray-100">
-              {/* 图片 - 有 demo_url 用 thum.io 生成预览，否则用 image_url */}
+              {/* 图片 - 有 demo_url 用 thum.io 生成预览，否则显示占位图 */}
               <div className="relative aspect-[4/3] overflow-hidden bg-gray-50">
                 {work.demo_url ? (
                   <img 
                     src={`https://image.thum.io/get/width/640/${work.demo_url}`}
-                    alt={work.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => {
-                      e.target.style.display = 'none'
-                      e.target.nextSibling.style.display = 'flex'
-                    }}
-                  />
-                ) : work.image_url ? (
-                  <img 
-                    src={work.image_url} 
                     alt={work.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
